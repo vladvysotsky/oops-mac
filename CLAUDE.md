@@ -61,6 +61,27 @@ Two differences worth knowing before writing the platform layer:
   discovered by probing. Do not drop that handler: it is the known cause of
   "the program stopped working at some point".
 
+## Planned features, and what was learned from keyboop
+
+[keyboop](https://github.com/iffuno/keyboop) solves the same problem on macOS.
+Two of its decisions are worth taking:
+
+- **Translation via Apple's on-device Translation framework**, replacing the
+  selection in place. Nothing to download, nothing to ship, no second engine —
+  the Windows version carries Bergamot and ~45 MB of models only because
+  Windows has no equivalent. Requires macOS 15; on 13 and 14 the feature is
+  offered but tells the user what it needs.
+- **Push-to-talk for dictation**: hold the shortcut, speak, release. Better
+  than the Windows toggle, and the reason the Windows version does not do it
+  is specific to Windows — its hotkeys are modifier-only chords, where holding
+  is indistinguishable from auto-repeat. There is no such constraint here.
+  A toggle stays available as an option for long dictation.
+
+Speech recognition stays on **whisper.cpp** (Metal). keyboop also ships
+Parakeet through the Neural Engine, which is faster on Apple Silicon — worth
+adding later as an option, but not as the base: Whisper is the more reliable of
+the two on Russian, and Russian is the primary language here.
+
 ## Distribution
 
 Gatekeeper is stricter than SmartScreen: an unsigned build is effectively
