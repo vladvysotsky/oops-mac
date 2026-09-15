@@ -61,6 +61,22 @@ Two differences worth knowing before writing the platform layer:
   discovered by probing. Do not drop that handler: it is the known cause of
   "the program stopped working at some point".
 
+## Two core changes landed on Windows after this port — carry them over
+
+Both are in the Windows repository's `CLAUDE.md`; the Swift core here still has
+the older behaviour.
+
+1. **`AutoConvertWithDirection` picks the direction per word**, not per piece,
+   and reports the direction of the last word that had one. Without it the
+   ordinary mixed case cannot be fixed at all: in
+   "Z djn [jxe pfgecnbnm ЬщвудКшыл" the first words were typed in the English
+   layout instead of Russian and the last one the other way round, and one
+   direction for the whole piece lets the majority of letters win.
+2. **The scope continues by content, not only by the clock.** If the buffer is
+   still exactly what we emitted, nothing was typed after our edit, so the next
+   press continues the same scope however long the user took. Otherwise a slow
+   second press started a new session and undid the first one.
+
 ## Planned features, and what was learned from keyboop
 
 [keyboop](https://github.com/iffuno/keyboop) solves the same problem on macOS.
